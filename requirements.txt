@@ -1,0 +1,9 @@
+pyTelegramBotAPI
+requests
+ccxt
+pandas
+numpy
+datetime
+time
+telebot
+os
