@@ -3,6 +3,3 @@ requests
 ccxt
 pandas
 numpy
-
-telebot
-os
