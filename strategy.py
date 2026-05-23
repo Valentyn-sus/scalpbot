@@ -7,8 +7,8 @@ import requests
 import telebot
 import os
 
-TELEGRAM_TOKEN = '7393748470:AAEFTKeMexVrbstjw3vyHI71-lHOPC0WSIc'
-TELEGRAM_CHAT_ID = '821584974'
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("CHAT_ID")
 ALERT_COOLDOWN = 30  # Минут между сигналами для одного символа
 
 TOKEN = os.getenv("TOKEN")  # заберёт из переменных окружения
