@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Наша база данных PostgreSQL
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: crawler_postgres
+    environment:
+      POSTGRES_USER: crawler_user
+      POSTGRES_PASSWORD: secure_password
+      POSTGRES_DB: crawler_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Этот пункт автоматически создаст таблицы при первом запуске!
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - crawler_network
+
+  # Наш Python микросервис (FastAPI воркер)
+  crawler_app:
+    build: .
+    container_name: crawler_api
+    ports:
+      - "8000:8000"
+      - "9090:9090"
+    volumes:
+      - .:/app
+    environment:
+      - MAX_CONCURRENT_TASKS=5
+      - TARGET_DEPOSIT_AMOUNT=500
+      - CATCHALL_EMAIL_DOMAIN=@verify.com
+      - PROXY_SERVER_URL=http://your-proxy-router:8080
+      # Обратите внимание: вместо localhost пишем имя сервиса базы данных 'postgres_db'
+      - DB_DSN=postgresql://crawler_user:secure_password@postgres_db:5432/crawler_db
+    depends_on:
+      - postgres_db
+    networks:
+      - crawler_network
+
+volumes:
+  pgdata:
+
+networks:
+  crawler_network:
+    driver: bridge
